@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include"SDL/SDL.h"
+#include<SDL/SDL_mixer.h>
+#include"SDL/SDL_image.h"
+#include"SDL/SDL_ttf.h"
+void main(SDL_Rect cam,SDL_Surface*screen,SDL_Surface*image,SDL_Surface*mc,SDL_Rect player,int height ,int width=1000;)
+{
+
+
+int p=0;
+
+SDL_Event event;
+
+
+SDL_Rect background;
+
+
+
+int a=0;
+int keep=1;
+
+
+
+
+
+
+
+
+
+
+
+
+SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
+
+SDL_BlitSurface(image,&cam,screen,NULL);
+SDL_BlitSurface(mc,NULL,screen,&player);
+
+
+while(SDL_PollEvent(&event))
+{
+switch(event.type)
+{
+case SDL_QUIT:
+done=0;
+break;
+case SDL_KEYDOWN:
+{
+if(event.key.keysym.sym==SDLK_ESCAPE)
+{
+done=0;
+}
+else if(event.key.keysym.sym==SDLK_LEFT)
+{
+  if ((cam.x!=0)&&(player.x<=width/2))
+  {
+     cam.x-=10;
+     a--;
+
+  }
+  else if (((cam.x==0)||(player.x>width/2))&&(player.x!=0))
+  {
+    player.x-=10;
+    p-=10;
+  }
+
+}
+else if(event.key.keysym.sym==SDLK_RIGHT)
+{
+  if ((player.x==width/2)&&(a!=(8000*1)/16))//(8000:backround width.16:proportions)
+  {
+     cam.x+=10;
+     a++;
+  }
+  else if (((player.x!=width/2)||(a==(8000*1)/16))&&(p!=width-50))
+  {
+    player.x+=10;
+    p+=10;
+
+  }
+
+}
+break;
+}
+}
+}
+SDL_Flip(screen);
+
+
+
+TTF_Quit();
+SDL_Quit();
+
+}
