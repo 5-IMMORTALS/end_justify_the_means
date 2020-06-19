@@ -1,0 +1,154 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include"SDL/SDL.h"
+#include<SDL/SDL_mixer.h>
+#include"SDL/SDL_image.h"
+#include"SDL/SDL_ttf.h"
+
+
+
+
+
+
+void main(SDL_Rect cam )
+{
+int width=1000;
+int height=600;
+int p=0;
+int y;
+int s,tempsPrecedent,tempsActuel;
+
+SDL_Event event;
+SDL_Surface*screen=NULL;
+SDL_Surface*image=NULL;
+SDL_Surface*mc=NULL;
+SDL_Rect background;
+SDL_Rect player;
+int i;
+
+int a=0;
+int keep=1;
+if(SDL_Init(SDL_INIT_VIDEO)!=0)
+{
+printf("unable to initialize SDL: %s\n",SDL_GetError());
+
+}
+screen=SDL_SetVideoMode(width,height,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+if(screen==NULL)
+{
+printf("unable to set video mode: %s\n",SDL_GetError());
+
+}
+image=IMG_Load("scrolling1.jpg");
+if(image==NULL)
+{
+printf("unable to load bitmap: %s\n",SDL_GetError());
+
+}
+
+cam.x=0;
+cam.y=0;
+cam.w=image->w;
+cam.h=image->h;
+
+background.x=0;
+background.y=0;
+background.w=image->w;
+background.h=image->h;
+mc=IMG_Load("detective.png");
+if(mc==NULL)
+{
+printf("unable to load detective: %s\n",SDL_GetError());
+
+}
+SDL_SetColorKey(mc,SDL_RLEACCEL|SDL_SRCCOLORKEY,SDL_MapRGB(mc->format,255,255,255));
+player.x=10;
+player.y=450;
+player.w=mc->w;
+player.h=mc->h;
+y=player.y;
+int done=1;
+int j;
+SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
+while(done)
+{
+SDL_BlitSurface(image,&cam,screen,NULL);
+SDL_BlitSurface(mc,NULL,screen,&player);
+
+
+while(SDL_PollEvent(&event))
+{
+switch(event.type)
+{
+case SDL_QUIT:
+done=0;
+break;
+case SDL_KEYDOWN:
+{
+if(event.key.keysym.sym==SDLK_ESCAPE)
+{
+done=0;
+}
+else if(event.key.keysym.sym==SDLK_LEFT)
+{
+  if ((cam.x!=0)&&(player.x<=width/2))
+  {
+     cam.x-=10;
+     a--;
+
+  }
+  else if (((cam.x==0)||(player.x>width/2))&&(player.x!=0))
+  {
+    player.x-=10;
+    p-=10;
+  }
+
+}
+else if(event.key.keysym.sym==SDLK_RIGHT)
+{
+  if ((player.x==width/2)&&(a!=(8000*1)/16))//(8000:backround width.16:proportions)
+  {
+     cam.x+=10;
+     a++;
+  }
+  else if (((player.x!=width/2)||(a==(8000*1)/16))&&(p!=width-50))
+  {
+    player.x+=10;
+    p+=10;
+
+  }
+
+}
+
+else if(event.key.keysym.sym==SDLK_UP)
+{
+  while(player.y>y-100)
+  {
+      player.y-=2;
+        SDL_Delay(20);
+        SDL_BlitSurface(mc,NULL,screen,&player);
+    
+        SDL_Flip(screen);
+  }
+  while(player.y<y)
+  {
+      player.y+=2;
+        SDL_Delay(20);
+        SDL_BlitSurface(mc,NULL,screen,&player);
+
+        SDL_Flip(screen);
+  }
+}
+break;
+}
+}
+}
+SDL_Flip(screen);
+}
+
+SDL_FreeSurface(image);
+SDL_FreeSurface(mc);
+TTF_Quit();
+SDL_Quit();
+
+}
