@@ -1,0 +1,91 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+
+
+void chrono(SDL_Surface *ecran,SDL_Rect position)
+{
+    int s=0;
+    int h=0;
+    int m=0;
+    SDL_Surface *texte = NULL;
+    SDL_Event event;
+    TTF_Font *police = NULL;
+    SDL_Color couleurNoire = {0, 0, 0}, couleurBlanche = {255, 255, 255};
+    int continuer = 1;
+    int tempsActuel = 0, tempsPrecedent = 0, seconde = 0;
+    char *temps; /* Tableau de char suffisamment grand */
+    int l=0;
+
+
+    temps=malloc(2*sizeof(char));
+    SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+
+
+    SDL_WM_SetCaption("Gestion du texte avec SDL_ttf", NULL);
+
+    /* Chargement de la police */
+    police = TTF_OpenFont("text.ttf", 50);
+
+    /* Initialisation du temps et du texte */
+    tempsActuel = SDL_GetTicks();
+    sprintf(temps, "%d:%d:%d",h,m,s);
+    texte = TTF_RenderText_Shaded(police, temps, couleurNoire, couleurBlanche);
+
+    while (continuer)
+    {
+        SDL_PollEvent(&event);
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                continuer = 0;
+                break;
+        }
+
+        SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
+
+        tempsActuel = SDL_GetTicks();
+        if (tempsActuel - tempsPrecedent >= 1000) /* Si 100 ms au moins se sont écoulées */
+        {
+            s+= 1;  /* On rajoute 100 ms au compteur */
+            if(s%60==0)
+            {
+              m+=1;
+              s=0;
+              if(m%60==0)
+              {
+                h+=1;
+                m=0;
+                s=0;
+              }
+            }
+
+
+            sprintf(temps, "%d:%d:%d",h,m,s); /* On écrit dans la chaîne "temps" le nouveau temps */
+            l=strlen(temps);
+            temps=realloc(temps,sizeof(char)*l);
+            SDL_FreeSurface(texte); /* On supprime la surface précédente */
+            texte = TTF_RenderText_Shaded(police, temps, couleurNoire, couleurBlanche); /* On écrit la chaîne temps dans la SDL_Surface */
+            tempsPrecedent = tempsActuel; /* On met à jour le tempsPrecedent */
+
+        }
+
+
+
+
+        SDL_BlitSurface(texte, NULL, ecran, &position); /* Blit du texte */
+        SDL_Flip(ecran);
+
+    }
+
+    TTF_CloseFont(police);
+    TTF_Quit();
+
+    SDL_FreeSurface(ecran);
+    SDL_FreeSurface(texte);
+    SDL_Quit();
+
+
+}
