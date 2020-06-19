@@ -1,0 +1,6 @@
+prog:menu_fct.o main.o
+	gcc menu_fct.o main.o -o prog -lSDL_image -lSDL_mixer -lSDL_ttf -lSDL
+main.o:main.c
+	gcc -c main.c -lSDL_image -lSDL_mixer -lSDL_ttf -lSDL
+menu_fct.o:menu_fct.c
+	gcc -c menu_fct.c -lSDL_image -lSDL_mixer -lSDL_ttf -lSDL
