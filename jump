@@ -106,7 +106,7 @@ else if(event.key.keysym.sym==SDLK_LEFT)
 }
 else if(event.key.keysym.sym==SDLK_RIGHT)
 {
-  if ((player.x==width/2)&&(a!=(8000*1)/16))//(8000:backround width.16:proportions)
+  if ((player.x>=width/2)&&(a!=(8000*1)/16))//(8000:backround width.16:proportions)
   {
      cam.x+=10;
      a++;
@@ -125,6 +125,8 @@ else if(event.key.keysym.sym==SDLK_UP)
   while(player.y>y-100)
   {
       player.y-=2;
+      player.x+=2;
+
         SDL_Delay(20);
         SDL_BlitSurface(mc,NULL,screen,&player);
     
@@ -133,6 +135,7 @@ else if(event.key.keysym.sym==SDLK_UP)
   while(player.y<y)
   {
       player.y+=2;
+player.x+=2;
         SDL_Delay(20);
         SDL_BlitSurface(mc,NULL,screen,&player);
 
